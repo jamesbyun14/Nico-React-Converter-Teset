@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="root"></div>
+  </body>
+  <script src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    function MinutesToHours() {
+      const [amount, setAmount] = React.useState(60);
+      const [flipped, setFlipped] = React.useState(false);
+      const onChange = (event) => {
+        setAmount(event.target.value);
+      };
+      const reset = () => setAmount(0);
+      const onFlip = () => {
+        reset();
+        setFlipped((flipped) => !flipped);
+      };
+      return (
+        <div>
+          <div>
+            <label htmlFor="minutes">Minutes </label>
+            <input
+              value={flipped ? amount * 60 : amount}
+              id="minutes"
+              placeholder="Minutes"
+              type="number"
+              onChange={onChange} //Update Value
+              disabled={flipped} //  <=> disabled = {flipped === true}
+            />
+          </div>
+          <div>
+            <label htmlFor="hours">Hours </label>
+            <input
+              value={flipped ? amount : Math.round(amount / 60)} //반올림
+              id="hours"
+              placeholder="Hours"
+              type="number"
+              disabled={!flipped} // <=> disabled = {flipped === false}
+              onChange={onChange}
+            />
+            <label hidden={flipped}> ({amount / 60})</label>
+          </div>
+          <button onClick={reset}>Reset</button>
+          <button onClick={onFlip}>Flip</button>
+        </div>
+      );
+    }
+    function MetersToKilometers() {
+      const [amount, setAmount] = React.useState(1000);
+      const [selected, setSelected] = React.useState("Meters");
+      const [codes, setCodes] = React.useState("See");
+      function onFocus(event) {
+        setSelected(event.target.id);
+        setAmount(event.target.value);
+      }
+      function onChange(event) {
+        setAmount(event.target.value);
+      }
+      function reset() {
+        setAmount(1000);
+        setSelected("Meters");
+      }
+
+      return (
+        <div>
+          <div>
+            <label>
+              Meters:
+              <input
+                id="Meters"
+                type="number"
+                placeholder="Meters"
+                onFocus={onFocus}
+                onChange={onChange}
+                value={selected === "Meters" ? amount : amount * 1000}
+              />
+            </label>
+            <label>
+              Kilometers:
+              <input
+                id="Kilometers"
+                type="number"
+                placeholder="Kilometers"
+                onFocus={onFocus}
+                onChange={onChange}
+                value={selected === "Meters" ? amount * 0.001 : amount}
+              />
+            </label>
+          </div>
+          <div>
+            <button onClick={reset}>Reset</button>
+            <button
+              onClick={() => {
+                codes === "See" ? setCodes("Hide") : setCodes("See");
+              }}
+            >
+              {codes} Codes
+            </button>
+            <h5 hidden={codes === "See" ? true : false}>Working On It 🫠</h5>
+          </div>
+        </div>
+      );
+    }
+    function App() {
+      const [index, setIndex] = React.useState("xx");
+      const onSelect = (event) => {
+        setIndex(event.target.value);
+      };
+      return (
+        <div>
+          <h1>Super Converter</h1>
+          <p>Thank you Nico for creating this amazing course!</p>
+          <select value={index} onChange={onSelect}>
+            <option value="xx">Select your units</option>
+            <option value="0">Minutes ↔ Hours</option>
+            <option value="1">Meters ↔ Kilometers</option>
+          </select>
+          {index === "xx" ? <h3>Please Select Your Units</h3> : null}
+          {index === "0" ? <MinutesToHours /> : null}
+          {index === "1" ? <MetersToKilometers /> : null}
+        </div>
+      );
+    }
+
+    const root = document.getElementById("root");
+    ReactDOM.render(<App />, root);
+  </script>
+</html>
